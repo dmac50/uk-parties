@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2 id="question"></h2>
+<div id="answers"></div>
+
+<script>
+const scores = {
+  r1: 0,
+  r2: 0,
+  r3: 0,
+  r4: 0
+};
+
+const questions = [
+  {
+    question: "question",
+    answers: [
+      { text: "optiona", points: { r1: 3, r3: 1 } },
+      { text: "b", points: { r2: 3, r4: 1 } },
+      { text: "c", points: { r3: 3, r1: 1 } },
+      { text: "d", points: { r4: 3, 2: 1 } }
+    ]
+  },
+  {
+    question: "another",
+    answers: [
+      { text: "aa", points: { r1: 3 } },
+      { text: "bb", points: { r2: 3 } },
+      { text: "cc", points: { r3: 3 } },
+      { text: "dd", points: { r4: 3 } }
+    ]
+  }
+];
+
+let currentQuestion = 0;
+
+function showQuestion() {
+  document.getElementById("question").textContent =
+    questions[currentQuestion].question;
+
+  const answersDiv = document.getElementById("answers");
+  answersDiv.innerHTML = "";
+
+  questions[currentQuestion].answers.forEach((answer, index) => {
+    const btn = document.createElement("button");
+    btn.textContent = answer.text;
+    btn.onclick = () => selectAnswer(index);
+    answersDiv.appendChild(btn);
+  });
+}
+
+function selectAnswer(index) {
+  addPoints(questions[currentQuestion].answers[index].points);
+  currentQuestion++;
+
+  if (currentQuestion < questions.length) {
+    showQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function addPoints(points) {
+  for (const trait in points) {
+    scores[trait] += points[trait];
+  }
+}
+
+function showResult() {
+  let result = Object.keys(scores).reduce((a, b) =>
+    scores[a] > scores[b] ? a : b
+  );
+
+  document.body.innerHTML =
+    `<h2>Your result: ${result}</h2>
+     <pre>${JSON.stringify(scores, null, 2)}</pre>`;
+}
+
+showQuestion();
+</script>
+
+</body>
+</html>
